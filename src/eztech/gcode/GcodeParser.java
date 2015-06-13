@@ -51,7 +51,7 @@ public class GcodeParser {
     }
 
     public static boolean isValidGcodeLine(String line) {
-        return Pattern.compile(PATTERN).matcher(line).matches();
+        return Pattern.compile(PATTERN).matcher(line).find();
     }
 
     public static HashMap<Character, Float> extractParamters(String line) {
