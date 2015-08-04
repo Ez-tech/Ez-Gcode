@@ -5,6 +5,7 @@
  */
 package eztech.gcode.util;
 
+import eztech.gcode.exception.UnsupportedFileFormatException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -43,4 +44,13 @@ public class Utils {
         }
     }
 
+    public static Extenxtion getExtenion(File file) throws UnsupportedFileFormatException {
+        String name = file.getName();
+        String ext = name.substring(name.lastIndexOf(".") + 1).toUpperCase();
+        try {
+            return Extenxtion.valueOf(ext);
+        } catch (Exception e) {
+            throw new UnsupportedFileFormatException(String.format("File \"%s\" is not Supported", ext));
+        }
+    }
 }

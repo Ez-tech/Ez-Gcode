@@ -5,6 +5,10 @@
  */
 package eztech.gcode;
 
+import eztech.gcode.exception.InvalidLineCodeException;
+import eztech.gcode.preprossoring.Preprocessors;
+import eztech.gcode.util.Extenxtion;
+import eztech.gcode.exception.*;
 import eztech.gcode.util.Utils;
 import java.io.File;
 import java.util.ArrayList;
@@ -23,31 +27,35 @@ public class GcodeParser {
     private static final String PRAMTERS_PATTERN = "([XYZIJ])";
     private static final String PATTERN = String.format("%s( ?%s%s)+", CODE_PATTERN, PRAMTERS_PATTERN, FlOAT_PATTERN);
 
-    public GcodeParser(File file) {
-    }
-
-    public static List<Gcode> compile(File file) {
-        return compile(Utils.LoadText(file));
+    public static List<Gcode> compile(File file) throws UnsupportedFileFormatException {
+        Extenxtion extention = Utils.getExtenion(file);
+        String fileData = Utils.LoadText(file);
+        fileData = Preprocessors.convert(fileData, extention);
+        return compile(fileData);
     }
 
     public static List<Gcode> compile(String content) {
         String[] gcodeLines = content.split("\n");
         ArrayList<Gcode> gcodeList = new ArrayList<>();
+        ArrayList<String> invalidLines = new ArrayList<>();
         for (String gcodeLine : gcodeLines) {
-            Gcode gcode = lineToGcode(gcodeLine);
-            if (gcode != null) {
+            try {
+                Gcode gcode = lineToGcode(gcodeLine);
                 gcodeList.add(gcode);
+            } catch (UnsupportedCodeException | InvalidLineCodeException ex) {
+                System.err.println(ex.getMessage());
+                invalidLines.add(gcodeLine);
             }
         }
+        System.err.println("No of uncompiled lines: " + invalidLines.size());
         return gcodeList;
     }
 
-    public static Gcode lineToGcode(String line) {
-        Gcode gcode = null;
+    public static Gcode lineToGcode(String line) throws UnsupportedCodeException, InvalidLineCodeException {
         if (isValidGcodeLine(line)) {
-            gcode = new Gcode(extractCode(line), extractParamters(line));
+            return new Gcode(extractCode(line), extractParamters(line));
         }
-        return gcode;
+        throw new InvalidLineCodeException(String.format("This Code \"%s\" is not Supported", line));
     }
 
     public static boolean isValidGcodeLine(String line) {
@@ -67,12 +75,15 @@ public class GcodeParser {
         return params;
     }
 
-    static public Code extractCode(String line) {
+    static public Code extractCode(String line) throws UnsupportedCodeException {
         Matcher codeMatcher = Pattern.compile(CODE_PATTERN).matcher(line);
         if (codeMatcher.find()) {
-            return Code.valueOf(codeMatcher.group());
-        } else {
-            return null;
+            try {
+                return Code.valueOf(codeMatcher.group());
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
         }
+        throw new UnsupportedCodeException(String.format("This Code \"%s\" is not Supported", line));
     }
 }
