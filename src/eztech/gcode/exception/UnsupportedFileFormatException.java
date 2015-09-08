@@ -12,7 +12,6 @@ package eztech.gcode.exception;
 public class UnsupportedFileFormatException extends Exception {
 
     public UnsupportedFileFormatException(String format) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

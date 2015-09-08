@@ -20,4 +20,8 @@ public enum Extenxtion {
         this.description = description;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
 }
