@@ -13,7 +13,6 @@ public class TapPreProcessor implements PreProcessor {
 
     @Override
     public String convert(String code) {
-        StringBuilder str = new StringBuilder(code);
         code = code.replaceAll("X", " X");
         code = code.replaceAll("Y", " Y");
         code = code.replaceAll("Z", " Z");
@@ -37,7 +36,7 @@ public class TapPreProcessor implements PreProcessor {
                 codeLines[i] = "G01" + " " + codeLines[i].trim();
             }
         }
-        str = new StringBuilder();
+        StringBuilder str = new StringBuilder();
         for (String string : codeLines) {
             str.append(string).append("\n");
         }

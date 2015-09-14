@@ -5,7 +5,10 @@
  */
 package eztech.gcode;
 
-import java.util.Map.Entry;
+import eztech.gcode.exception.InvalidLineCodeException;
+import eztech.gcode.exception.UnsupportedCodeException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,16 +43,20 @@ public class GcodeParserTest {
 
     @Test
     public void testLineToGcode() {
-        System.out.println("lineToGcode");
-        Gcode expResult = new Gcode(Code.G01);
-        expResult.getParamters().put('X', -24f);
-        expResult.getParamters().put('Y', 1.2f);
-        Gcode result = GcodeParser.lineToGcode("G01 X-24 Y1.2");
-        assertEquals(result.getCode(), Code.G01);
-        for (Entry<Character, Float> entrySet : result.getParamters().entrySet()) {
-            Character key = entrySet.getKey();
-            Float value = entrySet.getValue();
-            assertEquals(expResult.getParamters().get(key), value);
+        try {
+            System.out.println("lineToGcode");
+            Gcode expResult = new Gcode(Code.G01);
+            expResult.getParamters().put('X', -24f);
+            expResult.getParamters().put('Y', 1.2f);
+            Gcode result = GcodeParser.lineToGcode("G01 X-24 Y1.2");
+            assertEquals(result.getCode(), Code.G01);
+            result.getParamters().entrySet().stream().forEach((entrySet) -> {
+                Character key = entrySet.getKey();
+                Float value = entrySet.getValue();
+                assertEquals(expResult.getParamters().get(key), value);
+            });
+        } catch (UnsupportedCodeException | InvalidLineCodeException ex) {
+            Logger.getLogger(GcodeParserTest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

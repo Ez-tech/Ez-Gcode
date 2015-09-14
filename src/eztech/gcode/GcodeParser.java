@@ -24,7 +24,7 @@ public class GcodeParser {
 
     private static final String FlOAT_PATTERN = "([-+]?\\d*\\.?\\d*)";
     private static final String CODE_PATTERN = "([GM]\\d{1,2})";
-    private static final String PRAMTERS_PATTERN = "([XYZIJ])";
+    private static final String PRAMTERS_PATTERN = "([XYZIJU])";
     private static final String PATTERN = String.format("%s( ?%s%s)+", CODE_PATTERN, PRAMTERS_PATTERN, FlOAT_PATTERN);
 
     public static List<Gcode> compile(File file) throws UnsupportedFileFormatException {
