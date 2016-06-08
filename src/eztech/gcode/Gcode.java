@@ -5,16 +5,18 @@
  */
 package eztech.gcode;
 
+import eztech.gcode.exception.InvalidGcodeParamtersException;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author yami
  */
-public class Gcode {
+public class Gcode implements Cloneable {
 
     public static final String PROP_PARAMTERS = "paramters";
     public static final String PROP_CODE = "code";
@@ -63,11 +65,28 @@ public class Gcode {
 
     @Override
     public String toString() {
-        String prams = "";
-        for (Map.Entry<Character, Float> entrySet : paramters.entrySet()) {
-            prams += " " + entrySet.getKey() + entrySet.getValue();
-        }
-        return code + prams;
+        return code + paramtersToString();
+    }
+
+    public String paramtersToString() {
+        final StringBuilder prams = new StringBuilder();
+        paramters.entrySet().stream().forEach((entrySet) -> {
+            prams.append(" ")
+                    .append(entrySet.getKey())
+                    .append(entrySet.getValue());
+        });
+        return prams.toString();
+    }
+
+    public void setParamtersFromString(String line) throws InvalidGcodeParamtersException {
+        setParamters(GcodeParser.extractParamters(line));
+    }
+
+    @Override
+    protected Gcode clone() {
+        Gcode gc = new Gcode(code);
+        gc.paramters.putAll(paramters);
+        return gc;
     }
 
 }

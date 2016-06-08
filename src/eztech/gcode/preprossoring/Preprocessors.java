@@ -24,5 +24,6 @@ public class Preprocessors {
 
     private Preprocessors() {
         preprocessors.put(Extenxtion.TAP, new TapPreProcessor());
+        preprocessors.put(Extenxtion.NGC, new TapPreProcessor());
     }
 }

@@ -12,6 +12,7 @@ package eztech.gcode.util;
 public enum Extenxtion {
 
     ANC("ArbCad Gcode"),
+    NGC("LinuxCNC File"),
     TAP("Artcam Tab File");
 
     String description;

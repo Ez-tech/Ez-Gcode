@@ -5,6 +5,7 @@
  */
 package eztech.gcode;
 
+import eztech.gcode.exception.InvalidGcodeParamtersException;
 import eztech.gcode.exception.InvalidLineCodeException;
 import eztech.gcode.exception.UnsupportedCodeException;
 import java.util.logging.Level;
@@ -55,7 +56,7 @@ public class GcodeParserTest {
                 Float value = entrySet.getValue();
                 assertEquals(expResult.getParamters().get(key), value);
             });
-        } catch (UnsupportedCodeException | InvalidLineCodeException ex) {
+        } catch (UnsupportedCodeException | InvalidLineCodeException | InvalidGcodeParamtersException ex) {
             Logger.getLogger(GcodeParserTest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
